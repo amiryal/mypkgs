@@ -29,6 +29,7 @@
         { pkgs, ... }:
         with pkgs;
         {
+          aqualung = callPackage ./aqualung.nix { };
         }
       );
     };
