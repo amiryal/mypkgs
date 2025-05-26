@@ -4,6 +4,7 @@
   autoreconfHook,
   pkg-config,
   fetchFromGitHub,
+  fetchpatch,
 
   # Mandatory
   gtk3,
@@ -58,7 +59,7 @@
   enablePulse ? true,
   pulseaudio,
 }:
-stdenv.mkDerivation {
+stdenv.mkDerivation (finalAttrs: {
   pname = "aqualung";
   version = "2.0";
   nativeBuildInputs = [
@@ -101,7 +102,14 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "jeremyevans";
     repo = "aqualung";
-    rev = "ecb4cd11d6eefaf8b4a97d837a986623bcff653a";
-    sha256 = "sha256-wU3PvRG0mWfd4+y3rcXX/nomU9f6X+TLaHPtDQF6a24=";
+    tag = finalAttrs.version;
+    hash = "sha256-jUz5iOvXJTxsF4EA35RyxBawcen+flULlpZs9p67YsA=";
   };
-}
+  patches =
+    [ ]
+    # use avcodec_free_context in place of avcodec_close in supported versions of ffmpeg
+    ++ lib.optional (lib.versionAtLeast ffmpeg.version "3.3") (fetchpatch {
+      url = "https://github.com/jeremyevans/aqualung/commit/d830ac5898412280ea02faebe82509a8129dac59.patch";
+      hash = "sha256-YMWlfK4242q3DoCcmfIeP3xQk2Ot05ifs2AN5CCDcco=";
+    });
+})
