@@ -30,6 +30,7 @@
         with pkgs;
         {
           aqualung = callPackage ./aqualung.nix { };
+          katvan = callPackage ./katvan.nix { };
         }
       );
     };
